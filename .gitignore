@@ -1,0 +1,19 @@
+# Segredos
+.env
+
+# Dados dos clientes (PDFs, cores e metricas sao locais de cada operacao)
+clientes/*
+!clientes/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.python-version
+
+# Streamlit
+.streamlit/secrets.toml
+
+# SO
+.DS_Store

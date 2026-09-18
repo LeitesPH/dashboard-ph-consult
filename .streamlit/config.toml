@@ -1,0 +1,10 @@
+[theme]
+base = "light"
+primaryColor = "#2a78d6"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f4f4f2"
+textColor = "#1a1a19"
+
+[server]
+# PDFs de estrategia costumam ser leves; 20 MB cobre com folga.
+maxUploadSize = 20
