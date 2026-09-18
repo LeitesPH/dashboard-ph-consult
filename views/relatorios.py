@@ -114,12 +114,12 @@ def render(cliente: str) -> None:
     st.title(f"Relatorios — {config['nome']}")
     st.markdown(
         f"""
-        <div style="display:flex;gap:8px;align-items:center;margin:-8px 0 14px 0;">
-          <span style="display:inline-block;width:14px;height:14px;border-radius:4px;
+        <div style="display:flex;gap:6px;align-items:center;margin:-6px 0 16px 0;flex-wrap:wrap;">
+          <span style="display:inline-block;width:13px;height:13px;border-radius:4px;flex:0 0 auto;
                        background:{tema.primaria};"></span>
           <span style="display:inline-block;width:14px;height:14px;border-radius:4px;
                        background:{tema.secundaria};"></span>
-          <span style="color:{cores.TINTA_SUAVE};font-size:.82rem;">
+          <span style="color:{cores.TINTA_SECUNDARIA};font-size:.82rem;margin-left:6px;">
             graficos pintados com as cores da marca deste cliente
           </span>
         </div>

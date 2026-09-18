@@ -23,16 +23,41 @@ CVD_ALVO = 8.0        # Delta E minimo desejado sob protanopia/deuteranopia
 CVD_PISO = 6.0        # abaixo disso o par e considerado indistinguivel
 PISO_VISAO_NORMAL = 15.0  # Delta E minimo sob visao normal
 CONTRASTE_MIN = 3.0   # contraste WCAG minimo de uma marca contra o fundo
+CONTRASTE_PISO = 1.6  # abaixo disso a marca some do fundo, mesmo com rotulo
 SUPERFICIE_CLARA = "#ffffff"
 
-COR_PRIMARIA_PADRAO = "#2a78d6"
-COR_SECUNDARIA_PADRAO = "#eb6834"
+# ---------------------------------------------------------------------------
+# Marca PH Consult -- cores extraidas da logo (a montanha com a bandeira)
+# ---------------------------------------------------------------------------
+# Papel de cada uma, e o motivo:
+#   MARINHO  corpo da montanha. Contraste 11.6:1 no branco -- e a cor de texto,
+#            de titulo e de botao primario.
+#   CORAL    a bandeira no cume. Croma alto, contraste 2.7:1 no branco -- otima
+#            como acento e como serie de grafico (sempre com rotulo direto do
+#            lado), nunca como fundo de texto pequeno.
+#   CREME    a neve. Fundo da barra lateral e das superficies de apoio.
+#   AZUL_*   as faces iluminadas do pico, para estados e realces intermediarios.
+MARINHO = "#1b3a5c"
+MARINHO_ESCURO = "#142c46"
+AZUL_MEDIO = "#3d6189"
+AZUL_CLARO = "#5c7da5"
+CORAL = "#ff6f61"
+CORAL_ESCURO = "#e85f52"
+CREME = "#f2f0e6"
+CREME_BORDA = "#e2ded0"
+
+# Sugestao de cores para um cliente novo: o par da propria PH Consult.
+# Separacao sob daltonismo de 29.8 (o alvo e 8), entao funciona como par de
+# series desde o primeiro cadastro -- e o usuario troca pelas cores do cliente.
+COR_PRIMARIA_PADRAO = MARINHO
+COR_SECUNDARIA_PADRAO = CORAL
 
 # Tinta do texto e elementos estruturais (nunca recebem a cor da serie).
-TINTA_PRIMARIA = "#1a1a19"
-TINTA_SECUNDARIA = "#5c5c58"
-TINTA_SUAVE = "#8a8a84"
-GRADE = "#e7e7e3"
+# Todas puxadas para o azul da marca, para o grafico conversar com a interface.
+TINTA_PRIMARIA = MARINHO
+TINTA_SECUNDARIA = "#4a6480"   # 6.1:1 no branco
+TINTA_SUAVE = "#7b8ea3"        # 3.4:1 -- so para rotulo de eixo e legenda fina
+GRADE = "#dfe4ea"
 
 _MACHADO = {
     "protan": (
@@ -174,6 +199,7 @@ def diagnosticar_par(
     contraste_secundaria = contraste(secundaria, superficie)
 
     avisos: list[str] = []
+    observacoes: list[str] = []
     status = "ok"
 
     if normal < PISO_VISAO_NORMAL:
@@ -197,13 +223,22 @@ def diagnosticar_par(
             "leitura continua possivel sem depender da cor."
         )
 
+    # Contraste com o fundo. Os graficos deste dashboard sempre imprimem o valor
+    # ao lado da marca e repetem os numeros na tabela, entao um contraste entre
+    # CONTRASTE_PISO e CONTRASTE_MIN nao impede a leitura -- vira observacao.
+    # Abaixo do piso a barra praticamente some do fundo, e ai e aviso mesmo.
     for nome, valor in (("primaria", contraste_primaria), ("secundaria", contraste_secundaria)):
-        if valor < CONTRASTE_MIN:
+        if valor < CONTRASTE_PISO:
             status = "atencao" if status == "ok" else status
             avisos.append(
-                f"A cor {nome} tem contraste baixo com o fundo branco "
-                f"({valor:.1f}:1; minimo {CONTRASTE_MIN:.0f}:1). Barras muito claras "
-                "somem no relatorio impresso."
+                f"A cor {nome} quase desaparece no fundo branco ({valor:.1f}:1). "
+                "Barras nessa cor somem na tela e no relatorio impresso."
+            )
+        elif valor < CONTRASTE_MIN:
+            observacoes.append(
+                f"A cor {nome} tem contraste suave com o fundo ({valor:.1f}:1). "
+                "Como todo grafico aqui traz o numero ao lado da barra e a tabela "
+                "logo acima, a leitura nao depende do preenchimento."
             )
 
     return {
@@ -215,4 +250,5 @@ def diagnosticar_par(
         "contraste_secundaria": contraste_secundaria,
         "status": status,
         "avisos": avisos,
+        "observacoes": observacoes,
     }

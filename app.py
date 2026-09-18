@@ -7,22 +7,24 @@ from __future__ import annotations
 
 import streamlit as st
 
+import estilo
 import utils
 from views import fabrica_ideias, novo_cliente, relatorios
 
 PAGINAS = ["1. Novo Cliente", "2. Relatorios", "3. Fabrica de Ideias"]
 
 st.set_page_config(
-    page_title="Dashboard de Midias Sociais",
-    page_icon=":material/insights:",
+    page_title="PH Consult — Dashboard de Midias Sociais",
+    page_icon=estilo.icone_pagina(),
     layout="wide",
     initial_sidebar_state="expanded",
 )
+estilo.aplicar()
 
 
 def _seletor_cliente(clientes: list[str]) -> str | None:
     """Selectbox 'Cliente Ativo', persistente entre as paginas."""
-    st.sidebar.markdown("### Cliente ativo")
+    estilo.rotulo("Cliente ativo")
 
     if not clientes:
         st.sidebar.selectbox(
@@ -73,11 +75,11 @@ def main() -> None:
     utils.garantir_estrutura()
     clientes = utils.listar_clientes()
 
-    st.sidebar.title("Midias Sociais")
+    estilo.marca_sidebar()
     cliente_ativo = _seletor_cliente(clientes)
 
     st.sidebar.divider()
-    st.sidebar.markdown("### Navegacao")
+    estilo.rotulo("Navegacao")
     pagina = st.sidebar.radio(
         "Navegacao", PAGINAS, label_visibility="collapsed", key="pagina_atual"
     )

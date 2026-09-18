@@ -54,6 +54,9 @@ def _previa_cores(primaria: str, secundaria: str) -> None:
             icon=":material/check_circle:",
         )
 
+    for observacao in diagnostico["observacoes"]:
+        st.caption(f":material/info: {observacao}")
+
 
 def _clientes_cadastrados() -> None:
     """Ajustes pos-cadastro: trocar cores ou substituir o PDF de estrategia."""

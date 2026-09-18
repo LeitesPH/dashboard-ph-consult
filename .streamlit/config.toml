@@ -1,9 +1,17 @@
+# Tema da PH Consult -- cores tiradas da logo (ver `cores.py`).
 [theme]
 base = "light"
-primaryColor = "#2a78d6"
+primaryColor = "#1b3a5c"             # marinho da montanha: botoes e foco
 backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f4f4f2"
-textColor = "#1a1a19"
+secondaryBackgroundColor = "#f2f0e6" # creme da neve
+textColor = "#1b3a5c"
+baseRadius = "10px"
+
+[theme.sidebar]
+backgroundColor = "#f2f0e6"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#1b3a5c"
+primaryColor = "#ff6f61"             # coral da bandeira: item selecionado
 
 [server]
 # PDFs de estrategia costumam ser leves; 20 MB cobre com folga.

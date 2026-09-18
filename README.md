@@ -61,12 +61,34 @@ maquina e nao vao para o repositorio.
 | `app.py` | Ponto de entrada: barra lateral (Cliente Ativo, navegacao, chave da API) e roteamento |
 | `utils.py` | Pastas, `config.json`, `metricas.csv` e extracao de texto do PDF |
 | `graficos.py` | Graficos Plotly, sempre com as cores da marca do cliente |
-| `cores.py` | Conversoes de cor e diagnostico de legibilidade do par de cores |
+| `cores.py` | Paleta da PH Consult, conversoes de cor e diagnostico de legibilidade |
+| `estilo.py` | Identidade visual da interface (CSS, logo, tipografia) |
 | `ia.py` | Chamada a API da Anthropic e o prompt de sistema |
 | `views/` | Uma pagina por arquivo |
+| `assets/` | Logo da PH Consult (versao da barra lateral e icone da aba) |
 
 > A pasta se chama `views/` e nao `pages/` de proposito: o Streamlit trata
 > `pages/` como navegacao automatica, o que brigaria com o menu da barra lateral.
+
+## Identidade visual
+
+As cores foram tiradas diretamente da logo (a montanha com a bandeira) e vivem
+em `cores.py`:
+
+| Cor | Hex | Onde aparece |
+|---|---|---|
+| Marinho | `#1b3a5c` | corpo da montanha — texto, titulos e botao primario |
+| Coral | `#ff6f61` | a bandeira no cume — acentos, em doses pequenas |
+| Creme | `#f2f0e6` | a neve — barra lateral e superficies de apoio |
+| Azul medio / claro | `#3d6189` / `#5c7da5` | faces iluminadas do pico |
+
+O marinho tem 11,6:1 de contraste no branco, entao carrega o texto sem esforco.
+O coral tem 2,7:1 — otimo como acento e como serie de grafico (que sempre traz o
+numero ao lado), mas nunca como fundo de texto pequeno.
+
+Esse par tambem e a sugestao inicial de cores para um cliente novo: a separacao
+entre marinho e coral sob daltonismo e de 29,8 (o alvo do criterio e 8). O
+usuario troca pelas cores do cliente no cadastro.
 
 ## Decisoes que valem saber
 
@@ -78,6 +100,9 @@ aparece no relatorio.
 escolhidas livremente, a tela de cadastro mede a distancia entre elas (inclusive
 sob daltonismo) e o contraste com o fundo, mostrando uma previa do grafico. O
 aviso nao bloqueia o cadastro — a marca do cliente continua sendo a marca dele.
+Contraste suave vira observacao, e nao alerta: os graficos sempre imprimem o
+numero ao lado da barra, entao a leitura nao depende do preenchimento. So quando
+a cor praticamente some do fundo (abaixo de 1,6:1) e que vira aviso de verdade.
 
 **Cada metrica no seu proprio grafico quando as escalas sao diferentes.**
 Interacoes (milhares) e cliques no link (centenas) aparecem separados: no mesmo

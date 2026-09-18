@@ -18,7 +18,7 @@ import cores
 import utils
 
 SUPERFICIE = "#ffffff"
-FONTE = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+FONTE = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
 
 
 class Tema:
@@ -84,6 +84,9 @@ def _aplicar_tema(fig: go.Figure, titulo: str, titulo_y: str, com_legenda: bool)
         ticks="",
         tickfont={"color": cores.TINTA_SUAVE},
         rangemode="tozero",
+        # Reserva sozinho o espaco do titulo do eixo: sem isso, o rotulo fica
+        # cortado quando o grafico divide a largura com outro.
+        automargin=True,
     )
     return fig
 
@@ -178,8 +181,9 @@ def grafico_metrica_semanal(
         hovertemplate="%{x}: %{y:,}<extra></extra>",
     )
     fig.update_traces(marker_cornerradius=4)
-    # Serie unica: o titulo identifica a metrica, entao nao ha caixa de legenda.
-    return _aplicar_tema(fig, titulo, utils.ROTULOS_METRICAS[metrica], com_legenda=False)
+    # Serie unica: o titulo ja nomeia a metrica, entao nem legenda nem titulo de
+    # eixo -- repetir "Cliques no link" nos dois lugares so rouba largura.
+    return _aplicar_tema(fig, titulo, "", com_legenda=False)
 
 
 def grafico_seguidores(df: pd.DataFrame, tema: Tema) -> go.Figure:
@@ -275,4 +279,4 @@ def grafico_evolucao_mensal(df: pd.DataFrame, tema: Tema, metrica: str) -> go.Fi
         hovertemplate="%{x}: %{y:,}<extra></extra>",
     )
     fig.update_traces(marker_cornerradius=4)
-    return _aplicar_tema(fig, titulo, utils.ROTULOS_METRICAS[metrica], com_legenda=False)
+    return _aplicar_tema(fig, titulo, "", com_legenda=False)
