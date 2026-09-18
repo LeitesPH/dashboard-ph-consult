@@ -11,6 +11,7 @@ import json
 import os
 import re
 import unicodedata
+import uuid
 from datetime import datetime
 from pathlib import Path
 
@@ -337,6 +338,55 @@ def rotulo_mes(mes_referencia: str) -> str:
 def chave_mes(mes: str, ano: int) -> str:
     """Converte ('Setembro', 2026) em '2026-09'."""
     return f"{ano:04d}-{MESES.index(mes) + 1:02d}"
+
+
+# ---------------------------------------------------------------------------
+# Historico de conteudos gerados
+# ---------------------------------------------------------------------------
+# Mesma ideia dos "drafts" do ai-shorts-generator: cada geracao vira um JSON na
+# pasta do cliente. Sem isso, fechar a aba joga fora um roteiro que custou uma
+# chamada de API -- e o material serve de base para as proximas pautas.
+def pasta_conteudos(cliente: str) -> Path:
+    destino = pasta_cliente(cliente) / "conteudos"
+    destino.mkdir(parents=True, exist_ok=True)
+    return destino
+
+
+def salvar_conteudo(cliente: str, conteudo: dict) -> str:
+    """Grava uma geracao e devolve o identificador criado."""
+    identificador = uuid.uuid4().hex[:8]
+    registro = {
+        **conteudo,
+        "id": identificador,
+        "criado_em": datetime.now().isoformat(timespec="seconds"),
+    }
+    caminho = pasta_conteudos(cliente) / f"{identificador}.json"
+    with caminho.open("w", encoding="utf-8") as arquivo:
+        json.dump(registro, arquivo, ensure_ascii=False, indent=2)
+    return identificador
+
+
+def listar_conteudos(cliente: str) -> list[dict]:
+    """Geracoes salvas do cliente, da mais recente para a mais antiga."""
+    itens = []
+    for arquivo in pasta_conteudos(cliente).glob("*.json"):
+        try:
+            with arquivo.open(encoding="utf-8") as f:
+                itens.append(json.load(f))
+        except (OSError, ValueError):
+            continue  # um arquivo corrompido nao derruba o historico inteiro
+    itens.sort(key=lambda c: c.get("criado_em", ""), reverse=True)
+    return itens
+
+
+def excluir_conteudo(cliente: str, identificador: str) -> bool:
+    """Remove uma geracao salva."""
+    nome = Path(str(identificador)).name
+    caminho = pasta_conteudos(cliente) / f"{nome}.json"
+    if caminho.is_file():
+        caminho.unlink()
+        return True
+    return False
 
 
 # ---------------------------------------------------------------------------

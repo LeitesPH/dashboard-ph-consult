@@ -64,6 +64,8 @@ maquina e nao vao para o repositorio.
 | `cores.py` | Paleta da PH Consult, conversoes de cor e diagnostico de legibilidade |
 | `estilo.py` | Identidade visual da interface (CSS, logo, tipografia) |
 | `ia.py` | Chamada a API da Anthropic e o prompt de sistema |
+| `modelos.py` | Schemas das entregas (carrossel e Reels) validados na resposta da API |
+| `prompts/` | Prompts de sistema de cada gerador, em Markdown editavel |
 | `views/` | Uma pagina por arquivo |
 | `assets/` | Logo da PH Consult (versao da barra lateral e icone da aba) |
 
@@ -113,6 +115,30 @@ eixos y.
 geracao e outra, entao ele e marcado como prefixo cacheavel — o custo por clique
 cai bastante depois da primeira geracao. O rodape mostra quantos tokens vieram
 do cache.
+
+## Os tres geradores
+
+A Fabrica de Ideias tem tres modos, todos partindo do mesmo par (estrategia em
+PDF + referencia colada):
+
+| Modo | Entrega |
+|---|---|
+| Ideias de conteudo | 3 ideias para escolher um caminho antes de escrever |
+| Carrossel | Roteiro de ate 7 slides: hook, agitacao, 3 passos, autoridade e CTA |
+| Reels | Roteiro de 30 a 45s em tabela (visual/audio), com B-rolls e looping |
+
+**Os prompts ficam em `prompts/*.md`, nao no codigo.** Quem ajusta esse texto e
+o estrategista, entao mudar o tom de voz de um gerador e editar um Markdown --
+nao mexer em Python. Os arquivos estao exatamente como foram escritos.
+
+**A resposta vem validada por schema.** Em vez de pedir texto e interpretar com
+regex, os modos Carrossel e Reels declaram o formato em `modelos.py` e a API
+devolve a estrutura ja validada (`messages.parse`). E por isso que a tela
+consegue montar o carrossel slide a slide e o Reels como tabela de gravacao,
+com cada pedaco pronto para copiar.
+
+**Cada geracao fica salva** em `clientes/<cliente>/conteudos/`, entao fechar a
+aba nao joga fora um roteiro que custou uma chamada de API.
 
 ## Modelo usado
 
